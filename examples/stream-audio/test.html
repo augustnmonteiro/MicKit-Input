@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AudioWorklet Test</title>
+  <script src="./dist/index.js" defer></script>
+</head>
+<body>
+  <h1>AudioWorklet Test</h1>
+  <button id="start">Start AudioWorklet</button>
+  <script>
+
+    window.onload = () => {
+
+      const MicInput = new MicKitInput.MicInputManager();
+
+      MicInput.on('LISTENING', () => {
+        console.log('Listening')
+      })
+
+      MicInput.on('STOPPED', () => {
+        console.log('Mic Stopped')
+      })
+
+      ws = new WebSocket("ws://localhost:8080")
+
+      ws.addEventListener("open", () => {
+        console.log("Connection opened at " + (new Date()).toISOString())
+      })
+
+      MicInput.on('CHUNK', (data) => {
+        console.log(data)
+        ws.send(data.data);
+      })
+
+      MicInput.getAvailableMicrophones().then((mics) => {
+        console.log('Available Microphones:', mics);
+      });
+
+      async function initAudioWorklet() {
+        MicInput.listen();
+      }
+
+      document.getElementById('start').addEventListener('click', initAudioWorklet);
+
+    }
+  </script>
+</body>
+</html>

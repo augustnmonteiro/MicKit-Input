@@ -1,0 +1,46 @@
+import { MicInputManagerEvent, MicKitEventCallback, MicrophoneDevice } from './types.js';
+export declare class MicInputManager {
+    private audioContext;
+    private workletNode;
+    private gainNode;
+    private micSource;
+    private stream;
+    private eventCallbacks;
+    private selectedMicId;
+    private autoGainEnabled;
+    private gainStep;
+    private minGain;
+    private maxGain;
+    private isListening;
+    private deviceChangeListenerAdded;
+    private defaultGain;
+    private sliceDurationMs;
+    private processorThresholds;
+    private debugEnabled;
+    constructor(sliceDurationMs?: number, debug?: boolean);
+    listen(): Promise<void>;
+    stop(): void;
+    on(event: MicInputManagerEvent, callback: MicKitEventCallback): () => void;
+    setMaxGain(maxGain: number): void;
+    setMinGain(minGain: number): void;
+    setGain(gain: number): void;
+    setAutoGain(enabled: boolean): void;
+    setGainStep(step: number): void;
+    setProcessorThresholds(options: {
+        silentThreshold?: number;
+        tooQuietThreshold?: number;
+        tooLoudThreshold?: number;
+        peakThreshold?: number;
+        clippingPercentage?: number;
+    }): void;
+    setSelectedMic(micId: string): void;
+    setDefaultGain(gain: number): void;
+    getAvailableMicrophones(): Promise<MicrophoneDevice[]>;
+    private initializeAudioEngine;
+    private emit;
+    private handleDeviceChange;
+    private adjustGain;
+    private handleWorkletMessage;
+    private handleError;
+    private debugLog;
+}
